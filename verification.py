@@ -13,7 +13,7 @@ class SpeakerVerification(SpeakerRecognition):
         verification = super(cls,cls).from_hparams(*args, **kwargs)
         source = kwargs['source']
         if os.path.exists(os.path.join(source, 'imposter_embeddings.pt')):
-            verification.imp_emb = torch.load(os.path.join(source, 'imposter_embeddings.pt'))
+            verification.imp_emb = torch.load(os.path.join(source, 'imposter_embeddings.pt'), map_location='cuda' if torch.cuda.is_available() else 'cpu')
         
         return verification
     
@@ -27,7 +27,7 @@ class SpeakerVerification(SpeakerRecognition):
         score_e2_normed = (score_e1_e2 - score_e2.mean()) / score_e2.std()
         return score_e1_normed + score_e2_normed
           
-    def verify_files(self, path_x, path_y, threshold=0.25, mean_norm=True, snorm=True):
+    def verify_files(self, path_x, path_y, threshold=10, mean_norm=True, snorm=True):
         """Speaker verification with cosine distance
         Returns the score and the decision (0 different speakers,
         1 same speakers).

@@ -10,8 +10,8 @@ __set_seed: !apply:torch.manual_seed [!ref <seed>]
 data_folder: !PLACEHOLDER #e.g., /localscratch/voxceleb1
 output_folder: !ref results/snorm/<seed>
 save_folder: !ref <output_folder>/save/
-# device: 'cuda:0'
-device: 'cpu'
+device: 'cuda:0'
+# device: 'cpu'
 
 # Use the following links for the official voxceleb splits:
 # VoxCeleb1 (cleaned): https://www.robots.ox.ac.uk/~vgg/data/voxceleb/meta/veri_test2.txt
