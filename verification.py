@@ -26,8 +26,11 @@ class SpeakerVerification(SpeakerRecognition):
         score_e1_normed = (score_e1_e2 - score_e1.mean()) / score_e1.std()
         score_e2_normed = (score_e1_e2 - score_e2.mean()) / score_e2.std()
         return score_e1_normed + score_e2_normed
+    
+    def amplitude_normalize(self, sig):
+        return sig / sig.abs().max()
           
-    def verify_files(self, path_x, path_y, threshold=10, mean_norm=True, snorm=True):
+    def verify_files(self, path_x, path_y, threshold=10, mean_norm=True, snorm=True, a_norm=True):
         """Speaker verification with cosine distance
         Returns the score and the decision (0 different speakers,
         1 same speakers).
@@ -42,6 +45,9 @@ class SpeakerVerification(SpeakerRecognition):
         """
         batch_x, _ = torchaudio.load(path_x)
         batch_y, _ = torchaudio.load(path_y)
+        if a_norm:
+          batch_x = self.amplitude_normalize(batch_x)
+          batch_y = self.amplitude_normalize(batch_y)
         # Verify:
         emb1 = self.encode_batch(batch_x, normalize=mean_norm)
         emb2 = self.encode_batch(batch_y, normalize=mean_norm)
