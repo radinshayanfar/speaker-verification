@@ -27,8 +27,22 @@ class SpeakerVerification(SpeakerRecognition):
         score_e2_normed = (score_e1_e2 - score_e2.mean()) / score_e2.std()
         return score_e1_normed + score_e2_normed
     
-    def amplitude_normalize(self, sig):
+    def peak_normalize(self, sig):
         return sig / sig.abs().max()
+      
+    def rms_normalize(self, sig, rms_level=0):
+        """
+        Normalize the signal with rms technique.
+        Args:
+            - sig       (torch.Tensor) : input signal
+            - rms_level (int) : rms level in dB.
+        """
+        # linear rms level and scaling factor
+        r = 10**(rms_level / 10.0)
+        a = torch.sqrt( (len(sig) * r**2) / torch.sum(sig**2) )
+
+        # normalize
+        return sig * a
           
     def verify_files(self, path_x, path_y, threshold=10, mean_norm=True, snorm=True, a_norm=True):
         """Speaker verification with cosine distance
@@ -46,8 +60,8 @@ class SpeakerVerification(SpeakerRecognition):
         batch_x, _ = torchaudio.load(path_x)
         batch_y, _ = torchaudio.load(path_y)
         if a_norm:
-          batch_x = self.amplitude_normalize(batch_x)
-          batch_y = self.amplitude_normalize(batch_y)
+          batch_x = self.rms_normalize(batch_x)
+          batch_y = self.rms_normalize(batch_y)
         # Verify:
         emb1 = self.encode_batch(batch_x, normalize=mean_norm)
         emb2 = self.encode_batch(batch_y, normalize=mean_norm)
