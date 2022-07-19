@@ -82,8 +82,8 @@ class SpeakerVerification(SpeakerRecognition):
         return self.verify_tensors(batch_x, batch_y, threshold, mean_norm, snorm, a_norm)
 
     @staticmethod
-    def __bytes_to_tensor(x, format="mp3"):
-        segment_x = AudioSegment.from_file(io.BytesIO(x), format=format)
+    def __bytes_to_tensor(x):
+        segment_x = AudioSegment.from_file(io.BytesIO(x))
         segment_x = segment_x.set_channels(1)
         segment_x = segment_x.set_frame_rate(16000)
         tensor = torch.Tensor(segment_x.get_array_of_samples())
