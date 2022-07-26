@@ -30,6 +30,33 @@ class SpeakerVerification(SpeakerRecognition):
         score_e2_normed = (score_e1_e2 - score_e2.mean()) / score_e2.std()
         return score_e1_normed + score_e2_normed
     
+    @staticmethod
+    def __segment_to_tensor(segment):
+        segment = segment.set_frame_rate(16000)
+        tensor = torch.Tensor(segment.get_array_of_samples())
+        tensor = tensor.unsqueeze(dim=0)
+        return tensor
+
+    def embed_segment(self, segment, mean_norm=True, a_norm=True):
+        batch = SpeakerVerification.__segment_to_tensor(segment)
+        # Amplitude Norm
+        if a_norm:
+            batch = self.rms_normalize(batch)
+        # Embed
+        emb = self.encode_batch(batch, normalize=mean_norm)
+        return emb
+    
+    def score_embeddings(self, emb1, emb2, threshold=10, snorm=True):
+        # SNorm
+        if snorm and hasattr(self, 'imp_emb'):
+            score = self.compute_snorm(emb1, emb2)
+        else:
+            score = self.similarity(emb1, emb2)
+        # Decision
+        decision = score > threshold
+        # Squeeze
+        return score[0], decision[0]
+    
     def peak_normalize(self, sig):
         return sig / sig.abs().max()
       
@@ -46,22 +73,6 @@ class SpeakerVerification(SpeakerRecognition):
 
         # normalize
         return sig * a
-    
-    def verify_tensors(self, batch_x, batch_y, threshold=10, mean_norm=True, snorm=True, a_norm=True):
-        if a_norm:
-          batch_x = self.rms_normalize(batch_x)
-          batch_y = self.rms_normalize(batch_y)
-        # Verify:
-        emb1 = self.encode_batch(batch_x, normalize=mean_norm)
-        emb2 = self.encode_batch(batch_y, normalize=mean_norm)
-        # SNorm
-        if snorm and hasattr(self, 'imp_emb'):
-            score = self.compute_snorm(emb1, emb2)
-        else:
-            score = self.similarity(emb1, emb2)
-        decision = score > threshold
-        # Squeeze:
-        return score[0], decision[0]
           
     def verify_files(self, path_x, path_y, threshold=10, mean_norm=True, snorm=True, a_norm=True):
         """Speaker verification with cosine distance
@@ -78,20 +89,18 @@ class SpeakerVerification(SpeakerRecognition):
         """
         batch_x, _ = torchaudio.load(path_x)
         batch_y, _ = torchaudio.load(path_y)
-        
-        return self.verify_tensors(batch_x, batch_y, threshold, mean_norm, snorm, a_norm)
 
-    @staticmethod
-    def __bytes_to_tensor(x):
-        segment_x = AudioSegment.from_file(io.BytesIO(x))
-        segment_x = segment_x.set_channels(1)
-        segment_x = segment_x.set_frame_rate(16000)
-        tensor = torch.Tensor(segment_x.get_array_of_samples())
-        tensor = tensor.unsqueeze(dim=0)
-        return tensor
-    
-    def verify_bytes(self, bytes_x, bytes_y, threshold=10, mean_norm=True, snorm=True, a_norm=True):
-        batch_x = self.__bytes_to_tensor(bytes_x)
-        batch_y = self.__bytes_to_tensor(bytes_y)
-
-        return self.verify_tensors(batch_x, batch_y, threshold, mean_norm, snorm, a_norm)
+        if a_norm:
+            batch_x = self.rms_normalize(batch_x)
+            batch_y = self.rms_normalize(batch_y)
+        # Verify:
+        emb1 = self.encode_batch(batch_x, normalize=mean_norm)
+        emb2 = self.encode_batch(batch_y, normalize=mean_norm)
+        # SNorm
+        if snorm and hasattr(self, 'imp_emb'):
+            score = self.compute_snorm(emb1, emb2)
+        else:
+            score = self.similarity(emb1, emb2)
+        decision = score > threshold
+        # Squeeze:
+        return score[0], decision[0]
