@@ -1,8 +1,6 @@
 import os
-import io
 import torch
 import torchaudio
-from pydub import AudioSegment
 from speechbrain.pretrained import SpeakerRecognition
 
 
