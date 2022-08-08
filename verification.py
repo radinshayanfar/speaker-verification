@@ -24,7 +24,7 @@ class SpeakerVerification(SpeakerRecognition):
         emb1 = emb1.squeeze(0)
         emb2 = emb2.squeeze(0)
         score_e1 = self.similarity(emb1, self.imp_emb)
-        score_e2 = self.similarity(emb1, self.imp_emb)
+        score_e2 = self.similarity(emb2, self.imp_emb)
         score_e1_e2 = self.similarity(emb1, emb2)
         score_e1_normed = (score_e1_e2 - score_e1.mean()) / score_e1.std()
         score_e2_normed = (score_e1_e2 - score_e2.mean()) / score_e2.std()
