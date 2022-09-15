@@ -7,9 +7,9 @@ The original scripts for training on [VoxCeleb](http://www.robots.ox.ac.uk/~vgg/
 ## Speaker verification using ECAPA-TDNN embeddings
 The following notebooks used to train, test, and use ECAPA-TDNN model:
 
-- [Train notebook](./notebooks/ECAPA_train.ipynb) [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Sharif-DAL-INEF-1400/Verification-and-Identification-Speechbrain/blob/master/notebooks/ECAPA_train.ipynb)
-- [Test notebook](<./notebooks/ECAPA-TDNN test.ipynb>) [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](<https://colab.research.google.com/github/Sharif-DAL-INEF-1400/Verification-and-Identification-Speechbrain/blob/master/notebooks/ECAPA-TDNN test.ipynb>)
-- [Demo notebook](<./notebooks/ECAPA-TDNN demo.ipynb>) [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](<https://colab.research.google.com/github/Sharif-DAL-INEF-1400/Verification-and-Identification-Speechbrain/blob/master/notebooks/ECAPA-TDNN demo.ipynb>)
+- [Train notebook](./notebooks/ECAPA_train.ipynb) [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/radinshayanfar/speaker-verification/blob/master/notebooks/ECAPA_train.ipynb)
+- [Test notebook](<./notebooks/ECAPA-TDNN test.ipynb>) [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](<https://colab.research.google.com/github/radinshayanfar/speaker-verification/blob/master/notebooks/ECAPA-TDNN test.ipynb>)
+- [Demo notebook](<./notebooks/ECAPA-TDNN demo.ipynb>) [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](<https://colab.research.google.com/github/radinshayanfar/speaker-verification/blob/master/notebooks/ECAPA-TDNN demo.ipynb>)
 
 Not all file paths used in the notebooks are available publicly.
 
@@ -17,13 +17,15 @@ Not all file paths used in the notebooks are available publicly.
 
 [Speaker Verification Results with Common Voice]
 
-| System          | Dataset    | Accuracy* | Stress Test Accuracy** | Model Link |
+| System          | Dataset    | Accuracy<sup>1</sup> | Stress Test Accuracy<sup>2</sup> | Model Link<sup>3</sup> |
 |-----------------|------------|------| -----| -----|
 | ECAPA-TDNN      | Persian Common Voice | 97.5% | 86.8% | https://drive.google.com/drive/folders/1R_gvC_St56Atxfu8MLRb1PIlBnBahta2?usp=sharing |
 
-\* Tested on a private hand-made dataset, consisting of 8400 pair samples.
+<sup>1</sup> Tested on a private hand-made dataset, consisting of 8400 pair samples.
 
-** Tested on German [BROTHERS](https://clarin.phonetik.uni-muenchen.de/BASRepository/index.php?target=Public/Corpora/BROTHERS/BROTHERS.2.php) dataset.
+<sup>2</sup> Tested on German [BROTHERS](https://clarin.phonetik.uni-muenchen.de/BASRepository/index.php?target=Public/Corpora/BROTHERS/BROTHERS.2.php) dataset.
+
+<sup>3</sup> Model is not temporarily available for public use.
 
 ## Pretrained Model + Easy-Inference
 
